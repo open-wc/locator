@@ -11,14 +11,15 @@ class FoundElement extends LitElement {
     return {
       customElementName: { type: String },
       loading: { type: Boolean },
-      result: {type: Array}
+      result: {type: Object},
+      customElement: { type: Object}
     }
   }
 
   constructor() {
     super();
     this.loading = false;
-    this.result = [];
+    this.result = undefined;
   }
 
   highlight(el) {
@@ -32,11 +33,13 @@ class FoundElement extends LitElement {
   async search(el) {
     this.loading = true;
     const res = await fetch(`https://catalog.open-wc.org/.netlify/functions/search?downloadTime=50&sizeGzip=50&sizeSelf=50&githubStars=50&githubWatchers=50&queryString=${this.customElementName}`);
-
-    // iterate through response array, check if custom elements.json contains `el` (the component name)
     const responseAsJson = await res.json();
-    // better way to handle this in the template
-    this.result = responseAsJson;
+
+    const parentLibrary = responseAsJson.find(item => item.customElementsString.includes(el))
+    const customElementsJson = JSON.parse(parentLibrary.customElementsString);
+    this.customElement = customElementsJson.tags.find(item => el === item.name);
+
+    this.result = parentLibrary;
     this.loading = false;
   }
 
@@ -57,20 +60,20 @@ class FoundElement extends LitElement {
         ? html`loading`
         : html``
       }
-      ${this.result.length > 0
+      ${this.result
         ? html`
           <div>
-            <h1>${this.result[0].name}</h1>
-            <h2>${this.result[0].elName}</h2>
-            <a target="_blank" href="${this.result[0].npmUrl}">npm</a> <a target="_blank" href="${this.result[0].githubUrl}">github</a>
+            <h1>${this.result.name}</h1>
+            <h2>${this.customElement.name}</h2>
+            <a target="_blank" href="${this.result.npmUrl}">npm</a> <a target="_blank" href="${this.result.githubUrl}">github</a>
             <ul>
-              <li>Stars: ${this.result[0].githubStars}</li>
-              <li>Size gzip: ${this.result[0].sizeGzip}</li>
-              <li>Deps: ${this.result[0].flattenedDependencies.length}</li>
+              <li>Stars: ${this.result.githubStars}</li>
+              <li>Size gzip: ${this.result.sizeGzip}</li>
+              <li>Deps: ${this.result.flattenedDependencies.length}</li>
             </ul>
             <h3>Readme:</h3>
             <code>
-              ${this.result[0].readme}
+              ${this.result.readme}
             </code>
           </div>
         ` 
