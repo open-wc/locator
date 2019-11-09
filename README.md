@@ -6,7 +6,7 @@
 
 - Write code
 - Run `npm run build`
-- Go to [chrome://extensions/](chrome://extensions/)
+- Go to <a href="chrome://extensions/">chrome://extensions/</a>
 - Toggle 'Developer mode' in top right corner
 - Click 'Load unpacked' in top left corner
 - Select the root folder of this project
