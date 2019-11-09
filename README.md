@@ -11,9 +11,9 @@
 [![Built with open-wc recommendations](https://img.shields.io/badge/built%20with-open--wc-blue.svg)](https://github.com/open-wc)
 
 Chrome extension to find custom elements on a page, and search the catalog for extra information
-
-![demo](./meta_assets/giphytime.gif)
-
+<p align="center">
+  <img src="./meta_assets/giphytime.gif"/
+</p>
 ## Instructions
 
 - Write code
