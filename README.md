@@ -1,5 +1,7 @@
 # Custom Elements Locator
 
+![demo](./meta_assets/giphytime.gif)
+
 ## Instructions
 
 - Write code
