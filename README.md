@@ -14,6 +14,7 @@ Chrome extension to find custom elements on a page, and search the catalog for e
 <p align="center">
   <img src="./meta_assets/giphytime.gif"/
 </p>
+
 ## Instructions
 
 - Write code
