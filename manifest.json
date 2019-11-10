@@ -18,6 +18,7 @@
       "js": ["dist/content_script.js"]
     }
   ], 
+  "web_accessible_resources": ["dist/inject.js"],
   "permissions": [
     "activeTab",
     "background"

@@ -27,4 +27,17 @@ export default [{
   plugins: [
     resolve()
   ]
-}];
+},
+{
+  input: './src/inject.js',
+  output: {
+    dir: 'dist',
+    format: 'esm',
+    name: 'querySelectorAllDeep'
+  },
+  moduleName: 'query-selector-shadow-dom',
+  plugins: [
+    resolve(),
+  ]
+}
+];

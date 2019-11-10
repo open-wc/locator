@@ -1,0 +1,1 @@
+export { querySelectorAllDeep } from 'query-selector-shadow-dom';

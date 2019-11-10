@@ -1,9 +1,7 @@
 import {LitElement, html, css} from 'lit-element';
 
 const sendMessage = (msg, el, payload) => {
-  console.log(payload)
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-    console.log('sent msg');
     chrome.tabs.sendMessage(tabs[0].id, {msg: msg, elementName: el, payload});
   });
 }
@@ -57,7 +55,6 @@ class FoundElement extends LitElement {
     if(type === 'attribute') {
       if(valType === 'boolean') {
         const checked = e.composedPath()[0].checked;
-        console.log(valName);
         sendMessage("setVal", this.customElement.name, {valName, valType, newValue: checked, type});
       } else {
         sendMessage("setVal", this.customElement.name, {valName, valType, newValue, type});
@@ -65,7 +62,7 @@ class FoundElement extends LitElement {
     }
 
     if(type === 'property') {
-      sendMessage("setVal", this.customElement.name, {valName, valType, newValue, type});
+      sendMessage("setVal", this.customElement.name, {valName, valType, newValue, type, elementName: this.customElement.name});
     }
   }
 
@@ -101,7 +98,6 @@ class FoundElement extends LitElement {
               <div class="subheader">
                 <h3>Readme:</h3>
                 <h3 @click=${() => {
-                  console.log('clicked')
                   this.expendableItemState = { 
                     ...this.expendableItemState, 
                     readmeOpened: !this.expendableItemState.readmeOpened
@@ -116,7 +112,6 @@ class FoundElement extends LitElement {
               <div class="subheader">
                 <h3>Tweak:</h3>
                 <h3 @click=${() => {
-                  console.log('clicked')
                   this.expendableItemState = { 
                     ...this.expendableItemState, 
                     tweakOpened: !this.expendableItemState.tweakOpened
