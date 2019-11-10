@@ -43,8 +43,36 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(lastElements.length > 0 ) lastElements.forEach(el => el.style.border = 'none');
   }
 
-  if(request.msg === "target") {
+  if(request.msg === "setVal") {
+    const {valName, valType, newValue, type} = request.payload;
+    const elements = [...querySelectorAllDeep(request.elementName)];
+    
+    if(type === "attribute") {
+      if(valType === 'boolean' && newValue) {
+        elements[index].setAttribute(valName, '');
+      } 
 
+      if(valType === 'boolean' && !newValue) {
+        elements[index].removeAttribute(valName);
+      }
+
+      if(valType !== 'boolean') {
+        elements[index].setAttribute(valName, newValue);
+      }
+    }
+
+    console.log('setting property', valName, valType, newValue, type);
+    if(type === "property") {
+      if(valType === "{}") {
+        console.log(elements[index]);
+        console.log(elements[index].objProp);
+        console.log(elements[index][`'${valName}'`]);
+        // elements[index][valName] = JSON.parse(newValue);
+      }
+    }
+  }
+
+  if(request.msg === "target") {
     if(lastElements.length > 0 ) lastElements.forEach(el => el.style.border = 'none');
 
     const elements = [...querySelectorAllDeep(request.elementName)];

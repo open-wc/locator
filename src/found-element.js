@@ -1,8 +1,10 @@
 import {LitElement, html, css} from 'lit-element';
 
-const sendMessage = (msg, el) => {
+const sendMessage = (msg, el, payload) => {
+  console.log(payload)
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, {msg: msg, elementName: el});
+    console.log('sent msg');
+    chrome.tabs.sendMessage(tabs[0].id, {msg: msg, elementName: el, payload});
   });
 }
 
@@ -12,7 +14,8 @@ class FoundElement extends LitElement {
       customElementName: { type: String },
       loading: { type: Boolean },
       result: {type: Object},
-      customElement: { type: Object}
+      expendableItemState: { type: Object },
+      customElement: { type: Object }
     }
   }
 
@@ -20,6 +23,11 @@ class FoundElement extends LitElement {
     super();
     this.loading = false;
     this.result = undefined;
+    this.expendableItemState = {
+      readmeOpened: false,
+      tweakOpened: false,
+    }
+    this.customElement = {};
   }
 
   highlight(el) {
@@ -41,6 +49,24 @@ class FoundElement extends LitElement {
 
     this.result = parentLibrary;
     this.loading = false;
+  }
+
+  setVal(e, valName, valType, type) {
+    const newValue = e.composedPath()[0].value;
+
+    if(type === 'attribute') {
+      if(valType === 'boolean') {
+        const checked = e.composedPath()[0].checked;
+        console.log(valName);
+        sendMessage("setVal", this.customElement.name, {valName, valType, newValue: checked, type});
+      } else {
+        sendMessage("setVal", this.customElement.name, {valName, valType, newValue, type});
+      }
+    }
+
+    if(type === 'property') {
+      sendMessage("setVal", this.customElement.name, {valName, valType, newValue, type});
+    }
   }
 
   render() {
@@ -71,10 +97,57 @@ class FoundElement extends LitElement {
               <li>Size gzip: ${this.result.sizeGzip}</li>
               <li>Deps: ${this.result.flattenedDependencies.length}</li>
             </ul>
-            <h3>Readme:</h3>
-            <code>
-              ${this.result.readme}
-            </code>
+            <div>
+              <div class="subheader">
+                <h3>Readme:</h3>
+                <h3 @click=${() => {
+                  console.log('clicked')
+                  this.expendableItemState = { 
+                    ...this.expendableItemState, 
+                    readmeOpened: !this.expendableItemState.readmeOpened
+                  }
+                }}>
+                  ${this.expendableItemState.readmeOpened ? '\\/' : '/\\'}
+                </h3>
+              </div>
+              <code ?hidden=${!this.expendableItemState.readmeOpened}>
+                ${this.result.readme}
+              </code>
+              <div class="subheader">
+                <h3>Tweak:</h3>
+                <h3 @click=${() => {
+                  console.log('clicked')
+                  this.expendableItemState = { 
+                    ...this.expendableItemState, 
+                    tweakOpened: !this.expendableItemState.tweakOpened
+                  }
+                }}>
+                  ${this.expendableItemState.tweakOpened ? '\\/' : '/\\'}
+                </h3>
+              </div>
+              <code ?hidden=${!this.expendableItemState.tweakOpened}>
+
+                <h4>Attributes:</h4>
+                ${this.customElement.attributes.map(({name, type}) => html`
+                  <li>
+                    <p>${name}:</p>
+                    ${type === 'boolean'
+                      ? html`<input @input=${(e) => this.setVal(e, name, type, 'attribute')} type="checkbox"/>`
+                      : html`<input @input=${(e) => this.setVal(e, name, type, 'attribute')} type="text"/>`
+                    }
+                  </li>
+                `)}
+
+                <h4>Properties:</h4>
+                ${this.customElement.properties.map(({name, type}) => html`
+                  <li>
+                    <p>${name}:</p>
+                    <input @input=${(e) => this.setVal(e, name, type, 'property')} type="text"/>
+                  </li>
+                `)}
+
+              </code>
+            </div>
           </div>
         ` 
         : html`` 
@@ -88,6 +161,11 @@ class FoundElement extends LitElement {
         display: flex;
         flex-direction: column;
         width: 100%;
+      }
+
+      .subheader {
+        display: flex;
+        justify-content: space-between;
       }
 
       h1 {
@@ -104,6 +182,10 @@ class FoundElement extends LitElement {
         word-break: break-word;
         height: 200px;
         overflow: scroll;
+      }
+
+      code[hidden] {
+        display: none;
       }
 
       .el-name {
