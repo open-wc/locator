@@ -70,6 +70,7 @@ class CustomElementsLocator extends LitElement {
   static get styles() {
     return css`
       :host {
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
         width: 300px;
         font-family: sans-serif;
         display: block;

@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "lit-element": "^2.2.1",
-    "query-selector-shadow-dom": "^0.3.4"
+    "query-selector-shadow-dom": "^0.3.4",
+    "remarkable": "^2.0.0"
   },
   "devDependencies": {
     "rimraf": "^3.0.0",
