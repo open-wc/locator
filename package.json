@@ -6,7 +6,6 @@
   "scripts": {
     "build": "rimraf dist && rollup -c rollup.config.js",
     "build:watch": "rimraf dist && rollup -c --watch rollup.config.js"
-
   },
   "author": "",
   "license": "ISC",

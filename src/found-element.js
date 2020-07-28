@@ -30,29 +30,15 @@ class FoundElement extends LitElement {
     sendMessage("target", el);
   }
 
-  async search(el) {
-    this.loading = true;
-    const res = await fetch(`https://catalog.open-wc.org/.netlify/functions/search?downloadTime=50&sizeGzip=50&sizeSelf=50&githubStars=50&githubWatchers=50&queryString=${this.customElementName}`);
-    const responseAsJson = await res.json();
-
-    const parentLibrary = responseAsJson.find(item => item.customElementsString.includes(el))
-    const customElementsJson = JSON.parse(parentLibrary.customElementsString);
-    this.customElement = customElementsJson.tags.find(item => el === item.name);
-
-    this.result = parentLibrary;
-    this.loading = false;
-  }
-
   render() {
     return html`
       <div class="wrapper">
-        <div class="el-name" @mouseover=${() => this.highlight(this.customElementName)}>  
+        <div class="el-name" @mouseover=${() => this.highlight(this.customElementName)}>
           <span>
             <a target="_blank" href="https://catalog.open-wc.org">${this.customElementName}</a>
           </span>
         </div>
         <div class="icons">
-          <img @click=${() => this.search(this.customElementName)} class="search icon" src="./search.svg"/>
           <img @click=${() => this.target(this.customElementName)} class="icon" src="./reticle.svg"/>
         </div>
       </div>
@@ -76,8 +62,8 @@ class FoundElement extends LitElement {
               ${this.result.readme}
             </code>
           </div>
-        ` 
-        : html`` 
+        `
+        : html``
       }
     `;
   }
