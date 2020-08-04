@@ -27,4 +27,14 @@ export default [{
   plugins: [
     resolve()
   ]
+},
+{
+  input: './src/background_script.js',
+  output: {
+    dir: 'dist',
+    format: 'iife',
+  },
+  plugins: [
+    resolve()
+  ]
 }];
