@@ -16,18 +16,31 @@ function findAllCustomElements(nodes) {
     if (isCustomElement(el) && el.localName !== 'style' && !allCustomElements.find(ce => ce === el.localName)) {
       allCustomElements.push(el.localName);
     }
-    
+
     if (el.shadowRoot) {
       findAllCustomElements(el.shadowRoot.querySelectorAll('*'));
     }
   }
 }
 
+chrome.runtime.onConnect.addListener(function(port) {
+  port.onMessage.addListener(function(msg) {
+    port.postMessage({counter: msg.counter+1});
+  });
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if(request.msg === "init") {
+
+  if(request.msg === "findAll") {
     allCustomElements = [];
     findAllCustomElements(document.querySelectorAll('*'));
     sendResponse(allCustomElements)
+  }
+
+  if(request.msg === "init") {
+    // Custom elements are already found.
+    // Return cached ones.
+    sendResponse(allCustomElements);
   }
 
   if(request.msg === "highlight") {
@@ -70,7 +83,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     elements[index].scrollIntoView();
 
-    window.scrollBy(0, -200); 
+    window.scrollBy(0, -200);
     elements[index].setAttribute( 'style', 'border: dashed 3px blue !important;' );
 
     console.group('Custom Element Locator');
