@@ -5,7 +5,7 @@
   "main": "content_script.js",
   "scripts": {
     "reload": "open http://reload.extensions/",
-    "dev": "chokidar \"src/*.js\" -c \"npm run build;npm run reload\"\n\n",
+    "start": "chokidar \"src/*.js\" -c \"npm run build;npm run reload\"\n\n",
     "build": "rimraf dist && rollup -c rollup.config.js",
     "build:watch": "rimraf dist && rollup -c --watch rollup.config.js"
   },

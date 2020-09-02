@@ -28,7 +28,7 @@ Chrome extension to find custom elements on a page, and search the catalog for e
 If you are implementing and want to test repeatedly:
 
 - Install [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid)
-- Running `npm run dev` will rebuild on each change in the `src` folder, and trigger a reload of the extension.
+- Running `npm run start` will rebuild on each change in the `src` folder, and trigger a reload of the extension.
 - Refresh your current tab
 
 
