@@ -5,13 +5,12 @@ class ShareElement extends LitElement {
     static get properties() {
         return {
             locatorUrl : {type: String},
-            domain : {type: String},
+            domain : {type: String}, // TODO : Will be available soon
         }
     }
 
     constructor() {
         super();
-        this.domain = "github.com"
         this.locatorUrl = encodeURI("https://chrome.google.com/webstore/detail/custom-elements-locator/eccplgjbdhhakefbjfibfhocbmjpkafc");
     }
 
