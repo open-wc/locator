@@ -51,7 +51,6 @@ class CustomElementsLocator extends LitElement {
       ${this.loaded
         ? this.customElements.length > 0
           ? html`
-              <share-element .domain="${this.host}"></share-element>
               <h2>I found custom elements on </h2>
               <ul>
                 ${this.customElements
@@ -63,6 +62,7 @@ class CustomElementsLocator extends LitElement {
                     </li>
                   `)}
               </ul>
+              <share-element .domain="${this.host}"></share-element>
             `
           : html`<p>No custom elements found!</p>`
         : html`<p>Loading...</p>`
