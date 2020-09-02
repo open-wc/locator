@@ -35,7 +35,7 @@ class FoundElement extends LitElement {
       <div class="wrapper">
         <div class="el-name" @mouseover=${() => this.highlight(this.customElementName)}>
           <span>
-            <a target="_blank" href="https://catalog.open-wc.org">${this.customElementName}</a>
+            <a>${this.customElementName}</a>
           </span>
         </div>
         <div class="icons">

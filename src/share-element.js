@@ -34,17 +34,17 @@ class ShareElement extends LitElement {
         border: 1px;
         justify-content: center;
         display: flex;
-        text-align: left;                
+        text-align: left;
       }
 
-      
       img{
         vertical-align: middle;
       }
-      
+
       a {
-      border-left: 5px;
-        color: rgb(124, 124, 123);
+        border-left: 5px;
+        color: black;
+        font-size: 14px;
       }
     `
     }

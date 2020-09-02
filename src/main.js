@@ -34,25 +34,29 @@ class CustomElementsLocator extends LitElement {
   }
 
   firstUpdated() {
-    document.addEventListener('DOMContentLoaded', () => {
-      chrome.tabs.getSelected(null, (tab) => {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-          chrome.tabs.sendMessage(tabs[0].id, {msg: "init"}, ({customElements, host}) => {
-            if(customElements.length > 0 && !host.includes('localhost')) {
-              // add the host and elements to the db
-              col.doc(host).set({
-                site: host,
-                components: customElements
-              }, { merge: true });
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {msg: "init"}, ({customElements, host}) => {
+        if(!host.includes('localhost')) {
+          col.doc(host).get().then((doc) => {
+            if(doc.exists && !(customElements.length > 0)) {
+              col.doc(host).delete();
+            } else {
+              if(customElements.length > 0 ) {
+                col.doc(host).set({
+                  site: host,
+                  components: customElements
+                }, { merge: true });
+              }
             }
-
-            this.customElements = customElements;
-            this.host = host;
-            this.loaded = true;
           });
-        });
+        }
+
+        this.customElements = customElements;
+        this.host = host;
+        this.loaded = true;
       });
     });
+
     this.inputEl = this.shadowRoot.querySelector('input');
   }
 
