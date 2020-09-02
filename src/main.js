@@ -74,7 +74,6 @@ class CustomElementsLocator extends LitElement {
       ${this.loaded
         ? this.customElements.length > 0
           ? html`
-              <h2>I found custom elements on </h2>
               <ul>
                 ${this.customElements
                   .filter(element => element.includes(this.query))
