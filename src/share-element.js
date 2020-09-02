@@ -18,7 +18,7 @@ class ShareElement extends LitElement {
         const tweetText = encodeURI(`I just found some custom-elements on ${this.domain} using locator!`);
         return html`
             <div class="share">
-                <img class="icon" src="./share.svg"/>
+                <img alt="Share icon" class="icon" src="./share.svg"/>
                 <span>
                     <a href="https://twitter.com/intent/tweet?text=${tweetText}&url=${this.locatorUrl}&hashtags=webcomponents,webcomponentsinthewild&via=OpenWc" target="_blank">Share your findings on Twitter!</a>
                 </span>
