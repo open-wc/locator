@@ -1,5 +1,6 @@
 import {LitElement, html, css} from 'lit-element';
 import './found-element.js'
+import './share-element.js'
 
 class CustomElementsLocator extends LitElement {
   static get properties() {
@@ -44,12 +45,14 @@ class CustomElementsLocator extends LitElement {
         </a>
       </div>
       <h1>Custom Elements Locator</h1>
+      <share-element></share-element>
       <div>
         <input placeholder="Filter custom elements..." @input=${this.handleChange} type="text"/>
       </div>
       ${this.loaded
         ? this.customElements.length > 0
           ? html`
+              <h2>I found custom elements on </h2>
               <ul>
                 ${this.customElements
                   .filter(element => element.includes(this.query))
