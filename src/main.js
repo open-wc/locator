@@ -1,5 +1,7 @@
 import {LitElement, html, css} from 'lit-element';
+
 import './found-element.js';
+import './share-element.js'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
@@ -82,6 +84,7 @@ class CustomElementsLocator extends LitElement {
                     </li>
                   `)}
               </ul>
+              <share-element .domain="${this.host}"></share-element>
             `
           : html`<p>No custom elements found!</p>`
         : html`<p>Loading...</p>`
