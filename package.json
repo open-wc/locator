@@ -1,6 +1,6 @@
 {
   "name": "custom-elements-locator",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "",
   "main": "content_script.js",
   "scripts": {
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "firebase": "^7.19.1",
     "lit-element": "^2.2.1",
     "query-selector-shadow-dom": "^0.3.4"
   },
