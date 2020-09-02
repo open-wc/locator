@@ -4,6 +4,7 @@
   "description": "",
   "main": "content_script.js",
   "scripts": {
+    "dev": "chokidar \"src/*.js\" -c \"npm run build\"\n\n",
     "build": "rimraf dist && rollup -c rollup.config.js",
     "build:watch": "rimraf dist && rollup -c --watch rollup.config.js"
   },
@@ -14,6 +15,7 @@
     "query-selector-shadow-dom": "^0.3.4"
   },
   "devDependencies": {
+    "chokidar-cli": "^2.1.0",
     "rimraf": "^3.0.0",
     "rollup": "^1.26.3",
     "rollup-plugin-cpy": "^2.0.1",
