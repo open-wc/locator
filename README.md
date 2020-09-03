@@ -11,6 +11,7 @@
 [![Built with open-wc recommendations](https://img.shields.io/badge/built%20with-open--wc-blue.svg)](https://github.com/open-wc)
 
 Chrome extension to find custom elements on a page, and search the catalog for extra information
+
 <p align="center">
   <img src="./meta_assets/giphytime.gif"/
 </p>
@@ -19,7 +20,16 @@ Chrome extension to find custom elements on a page, and search the catalog for e
 
 - Write code
 - Run `npm run build`
-- Go to <a href="chrome://extensions/">chrome://extensions/</a>
+- Go to [chrome://extensions/](chrome://extensions/)
 - Toggle 'Developer mode' in top right corner
 - Click 'Load unpacked' in top left corner
 - Select the root folder of this project
+
+If you are implementing and want to test repeatedly:
+
+- Install [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid)
+- Running `npm run start` will rebuild on each change in the `src` folder, and trigger a reload of the extension.
+- Refresh your current tab
+
+
+## [Extension on the Chrome Store](https://chrome.google.com/webstore/detail/custom-elements-locator/eccplgjbdhhakefbjfibfhocbmjpkafc)

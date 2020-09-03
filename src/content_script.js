@@ -7,7 +7,6 @@ let index = 0;
 
 function isCustomElement(el) {
   const isAttr = el.getAttribute('is');
-
   return el.localName.includes('-') || isAttr && isAttr.includes('-');
 }
 
@@ -40,7 +39,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.msg === "init") {
     // Custom elements are already found.
     // Return cached ones.
-    sendResponse(allCustomElements);
+    sendResponse({
+      customElements: allCustomElements,
+      host: window.location.host
+    });
   }
 
   if(request.msg === "highlight") {
