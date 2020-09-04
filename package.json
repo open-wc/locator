@@ -8,7 +8,8 @@
     "start": "chokidar \"src/*.js\" -c \"npm run build;npm run reload\"\n\n",
     "build": "rimraf dist && rollup -c rollup.config.js",
     "build:watch": "rimraf dist && rollup -c --watch rollup.config.js",
-    "zip": "zip -r release/current.zip . -x \"node_modules/*\" \".idea/*\" \".git/*\" .gitignore"
+    "zip": "zip -r release/current.zip . -x \"node_modules/*\" \".idea/*\" \".git/*\" .gitignore",
+    "version": "mversion"
   },
   "author": "",
   "license": "ISC",
