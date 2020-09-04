@@ -17,6 +17,7 @@
       "matches": [
         "https://*/*"
       ],
+      "run_at": "document_end",
       "js": [
         "dist/content_script.js"
       ]

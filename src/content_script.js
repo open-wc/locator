@@ -30,12 +30,6 @@ chrome.runtime.onConnect.addListener(function(port) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
-  if(request.msg === "findAll") {
-    allCustomElements = [];
-    findAllCustomElements(document.querySelectorAll('*'));
-    sendResponse(allCustomElements)
-  }
-
   if(request.msg === "init") {
     // Custom elements are already found.
     // Return cached ones.
@@ -96,3 +90,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     lastElement = request.elementName;
   }
 });
+
+function notifyCustomElementCount() {
+	chrome.runtime.sendMessage({
+    msg: "customElementCount",
+    value: allCustomElements.length
+  });
+}
+
+function initSearch() {
+  findAllCustomElements(document.querySelectorAll('*'));
+  notifyCustomElementCount();
+}
+
+// Wait to the whole page is loaded.
+window.addEventListener('load', initSearch);
