@@ -2,8 +2,7 @@ name: Publish new version with Maven
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [ master ]
 
 jobs:
   build:
@@ -23,6 +22,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run zip
+      - run: npm run version
       - uses: actions/upload-artifact@v1
           with:
             name: Package
