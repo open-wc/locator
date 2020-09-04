@@ -7,7 +7,7 @@ let index = 0;
 
 function isCustomElement(el) {
   const isAttr = el.getAttribute('is');
-  return el.localName.includes('-') || isAttr && isAttr.includes('-');
+  return el.constructor !== HTMLUnknownElement && el.constructor !== HTMLElement && el.localName.includes('-') || isAttr && isAttr.includes('-');
 }
 
 function findAllCustomElements(nodes) {
