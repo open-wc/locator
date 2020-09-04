@@ -30,6 +30,6 @@ jobs:
           git push
       - run: npm run zip
       - uses: actions/upload-artifact@v1
-          with:
-            name: Package
-            path: release
+        with:
+          name: Package
+          path: release
