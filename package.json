@@ -7,7 +7,9 @@
     "reload": "open http://reload.extensions/",
     "start": "chokidar \"src/*.js\" -c \"npm run build;npm run reload\"\n\n",
     "build": "rimraf dist && rollup -c rollup.config.js",
-    "build:watch": "rimraf dist && rollup -c --watch rollup.config.js"
+    "build:watch": "rimraf dist && rollup -c --watch rollup.config.js",
+    "zip": "zip -r release/current.zip . -x \"node_modules/*\" \".idea/*\" \".git/*\" .gitignore",
+    "version": "mversion minor"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +20,7 @@
   },
   "devDependencies": {
     "chokidar-cli": "^2.1.0",
+    "mversion": "^2.0.1",
     "rimraf": "^3.0.0",
     "rollup": "^1.26.3",
     "rollup-plugin-cpy": "^2.0.1",

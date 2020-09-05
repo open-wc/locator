@@ -31,5 +31,16 @@ If you are implementing and want to test repeatedly:
 - Running `npm run start` will rebuild on each change in the `src` folder, and trigger a reload of the extension.
 - Refresh your current tab
 
+## CI and Release process
+
+CI and releases are created using Github Actions.
+
+* Any push on any branch or PR will run `npm run build` and create a zip in case content needs to be checked. 
+  * The zip can be tested in chrome using the `load packed extension` button in [chrome://extensions/](chrome://extensions/)
+  * See [this link](https://github.com/jlengrand/locator/actions/runs/239670902) for an example of pipeline. 
+* Any push to master (thus including a PR merge) will do the same **AND bump `package.json` and `manifest.json` as well as commit the new bump**. 
+  * The archive can then be used for upload in the Chrome Store. See [this link](https://github.com/jlengrand/locator/actions/runs/239692407) for an example.
+
+You can see all running actions [here](https://github.com/open-wc/locator/actions/new).
 
 ## [Extension on the Chrome Store](https://chrome.google.com/webstore/detail/custom-elements-locator/eccplgjbdhhakefbjfibfhocbmjpkafc)
