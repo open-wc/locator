@@ -1,26 +1,8 @@
 import { querySelectorAllDeep } from 'query-selector-shadow-dom';
 
-let allCustomElements = [];
 let lastElements = [];
 let lastElement = '';
 let index = 0;
-
-function isCustomElement(el) {
-  const isAttr = el.getAttribute('is');
-  return el.constructor !== HTMLUnknownElement && el.constructor !== HTMLElement && el.localName.includes('-') || isAttr && isAttr.includes('-');
-}
-
-function findAllCustomElements(nodes) {
-  for (let i = 0, el; el = nodes[i]; ++i) {
-    if (isCustomElement(el) && el.localName !== 'style' && !allCustomElements.find(ce => ce === el.localName)) {
-      allCustomElements.push(el.localName);
-    }
-
-    if (el.shadowRoot) {
-      findAllCustomElements(el.shadowRoot.querySelectorAll('*'));
-    }
-  }
-}
 
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(msg) {
@@ -28,12 +10,45 @@ chrome.runtime.onConnect.addListener(function(port) {
   });
 });
 
+let allCustomElements = [];
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if(request.msg === "findAll") {
-    allCustomElements = [];
-    findAllCustomElements(document.querySelectorAll('*'));
-    sendResponse(allCustomElements)
+    const s = document.createElement('script');
+    s.innerHTML = `
+    requestIdleCallback(() => {
+      function isCustomElement(el) {
+        const isAttr = el.getAttribute('is');
+        return customElements.get(el.localName) && el.localName.includes('-') || isAttr && isAttr.includes('-');
+      }
+
+      const allCustomElements = [];
+
+      function findAllCustomElements(nodes) {
+        for (let i = 0, el; el = nodes[i]; ++i) {
+          if (isCustomElement(el) && el.localName !== 'style' && !allCustomElements.find(ce => ce === el.localName)) {
+            allCustomElements.push(el.localName);
+          }
+
+          if (el.shadowRoot) {
+            findAllCustomElements(el.shadowRoot.querySelectorAll('*'));
+          }
+        }
+      }
+
+      findAllCustomElements(document.querySelectorAll('*'));
+      document.dispatchEvent(new CustomEvent('__GET_CUSTOM_ELEMENTS', {
+          detail: allCustomElements
+      }));
+    }, {timeout: 1000});`;
+    document.head.append(s);
+    s.onload = () => s.remove();
+
+    document.addEventListener('__GET_CUSTOM_ELEMENTS', ({detail}) => {
+      allCustomElements = detail;
+      sendResponse(allCustomElements.length > 0);
+    }, {once: true});
+    return true
   }
 
   if(request.msg === "init") {
