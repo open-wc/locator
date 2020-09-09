@@ -6,6 +6,7 @@ class ShareElement extends LitElement {
         return {
             locatorUrl : {type: String},
             domain : {type: String},
+            amount : {type: Number}
         }
     }
 
@@ -15,7 +16,7 @@ class ShareElement extends LitElement {
     }
 
     render() {
-        const tweetText = encodeURI(`I just found some custom-elements on ${this.domain} using locator!`);
+        const tweetText = encodeURI(`I just found ${this.amount} custom-elements on ${this.domain} using locator!`);
         return html`
             <div class="share">
                 <img alt="Share icon" class="icon" src="./share.svg"/>

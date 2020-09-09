@@ -89,6 +89,7 @@ class CustomElementsLocator extends LitElement {
       ${this.loaded
         ? this.customElements.length > 0
           ? html`
+              <h1>Found ${this.customElements.length} custom-elements</h1>
               <ul>
                 ${this.customElements
                   .filter(element => element.includes(this.query))
@@ -99,7 +100,7 @@ class CustomElementsLocator extends LitElement {
                     </li>
                   `)}
               </ul>
-              <share-element .domain="${this.host}"></share-element>
+              <share-element .amount="${this.customElements.length}" .domain="${this.host}"></share-element>
             `
           : html`<p>No custom elements found!</p>`
         : html`<p>Loading...</p>`
