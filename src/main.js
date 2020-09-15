@@ -11,6 +11,11 @@ firebase.initializeApp({
   projectId: "locator-a6a89",
 });
 
+const denyList = [
+  'localhost',
+  '127.0.0.1',
+]
+
 const col = firebase.firestore().collection("sites");
 
 class CustomElementsLocator extends LitElement {
@@ -36,7 +41,7 @@ class CustomElementsLocator extends LitElement {
   firstUpdated() {
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, {msg: "init"}, ({customElements, host}) => {
-        if(!host.includes('localhost')) {
+        if(!denyList.includes(host)) {
 
           col.doc(host).get().then((doc) => {
             // doc exists, but doesnt use CE anymore -> delete
