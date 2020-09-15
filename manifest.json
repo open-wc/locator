@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Custom Elements Locator",
   "description": "This extension will find any custom element on a page.",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "icons": {
     "16": "meta_assets/icon16.png",
     "48": "meta_assets/icon48.png",
@@ -14,8 +14,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*/*"],
-      "js": ["dist/content_script.js"],
+      "matches": [
+        "https://*/*"
+      ],
+      "js": [
+        "dist/content_script.js"
+      ],
       "run_at": "document_end"
     }
   ],
