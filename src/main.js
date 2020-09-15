@@ -11,6 +11,11 @@ firebase.initializeApp({
   projectId: "locator-a6a89",
 });
 
+const denyList = [
+  'localhost',
+  '127.0.0.1',
+]
+
 const col = firebase.firestore().collection("sites");
 
 class CustomElementsLocator extends LitElement {
@@ -36,7 +41,7 @@ class CustomElementsLocator extends LitElement {
   firstUpdated() {
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, {msg: "init"}, ({customElements, host}) => {
-        if(!host.includes('localhost')) {
+        if(!denyList.includes(host)) {
 
           col.doc(host).get().then((doc) => {
             // doc exists, but doesnt use CE anymore -> delete
@@ -78,7 +83,7 @@ class CustomElementsLocator extends LitElement {
   render() {
     return html`
       <div>
-        <a class="img-href" href="https://wild.open-wc.org" target="_blank">
+        <a class="img-href" href="https://www.open-wc.org" rel="noopener noreferrer" target="_blank">
           <svg style="margin-top: 10px" width="100px" height="100px" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200"><defs><style>.cls-1{fill:url(#linear-gradient);}</style><linearGradient id="linear-gradient" x1="100" x2="100" y2="200" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#9b03fe"/><stop offset="0.17" stop-color="#9706fe"/><stop offset="0.33" stop-color="#8b0ffe"/><stop offset="0.48" stop-color="#781dfe"/><stop offset="0.64" stop-color="#5c32fe"/><stop offset="0.8" stop-color="#394cfe"/><stop offset="0.95" stop-color="#0e6cfe"/><stop offset="1" stop-color="#0077fe"/></linearGradient></defs><path class="cls-1" d="M192.19,92.19H184.8a85.12,85.12,0,0,0-77-77V7.81a7.81,7.81,0,0,0-15.62,0V15.2a85.12,85.12,0,0,0-77,77H7.81a7.81,7.81,0,0,0,0,15.62H15.2a85.12,85.12,0,0,0,77,77v7.39a7.81,7.81,0,0,0,15.62,0V184.8a85.12,85.12,0,0,0,77-77h7.39a7.81,7.81,0,0,0,0-15.62ZM162.5,107.81h6.59a69.67,69.67,0,0,1-61.28,61.28V162.5a7.81,7.81,0,0,0-15.62,0v6.59a69.67,69.67,0,0,1-61.28-61.28H37.5a7.81,7.81,0,0,0,0-15.62H30.91A69.67,69.67,0,0,1,92.19,30.91V37.5a7.81,7.81,0,0,0,15.62,0V30.91a69.67,69.67,0,0,1,61.28,61.28H162.5a7.81,7.81,0,0,0,0,15.62ZM100,76.56A23.44,23.44,0,1,0,123.44,100,23.47,23.47,0,0,0,100,76.56Zm0,31.25a7.81,7.81,0,1,1,7.81-7.81A7.81,7.81,0,0,1,100,107.81Z"/></svg>
         </a>
       </div>
