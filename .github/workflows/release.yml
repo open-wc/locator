@@ -1,0 +1,36 @@
+name: Publish new version with Maven
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@open-wc.org
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build
+      - run: npm run version
+      - run: |
+          git add .
+          git commit -m "Version bump"
+          git push
+      - run: npm run zip
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Package
+          path: release

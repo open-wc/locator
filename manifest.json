@@ -6,11 +6,11 @@
   "icons": {
     "16": "meta_assets/icon16.png",
     "48": "meta_assets/icon48.png",
-   "128": "meta_assets/icon128.png"
+    "128": "meta_assets/icon128.png"
   },
   "browser_action": {
-   "default_icon": "meta_assets/icon.png",
-   "default_popup": "dist/index.html"
+    "default_icon": "meta_assets/icon.png",
+    "default_popup": "dist/index.html"
   },
   "content_scripts": [
     {
@@ -20,10 +20,12 @@
     }
   ],
   "background": {
-    "scripts": ["dist/background_script.js"]
+    "scripts": [
+      "dist/background_script.js"
+    ]
   },
   "permissions": [
     "activeTab",
     "background"
-   ]
+  ]
 }
