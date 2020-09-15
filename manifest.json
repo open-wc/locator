@@ -15,7 +15,8 @@
   "content_scripts": [
     {
       "matches": ["https://*/*"],
-      "js": ["dist/content_script.js"]
+      "js": ["dist/content_script.js"],
+      "run_at": "document_end"
     }
   ],
   "background": {
