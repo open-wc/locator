@@ -1,22 +1,11 @@
-import {LitElement, html, css} from 'lit-element';
+import { LitElement, html, css } from 'lit-element';
+import { cross, settings } from './icons/index.js';
+import '@generic-components/components/dialog.js';
+import '@generic-components/components/switch.js';
+import { dialog} from '@generic-components/components';
 
 import './found-element.js';
 import './share-element.js'
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-
-firebase.initializeApp({
-  apiKey: 'AIzaSyDHaekG4-W4Zv7FLHdai8uqGwHKV0zKTpw',
-  authDomain: "locator-a6a89.firebaseapp.com",
-  projectId: "locator-a6a89",
-});
-
-const denyList = [
-  'localhost',
-  '127.0.0.1',
-]
-
-const col = firebase.firestore().collection("sites");
 
 class CustomElementsLocator extends LitElement {
   static get properties() {
@@ -26,6 +15,8 @@ class CustomElementsLocator extends LitElement {
       loaded: { type: Boolean },
       showSubmit: { type: Boolean },
       host: { type: String},
+      // settings:
+      displayAmount: { type: Boolean },
     }
   }
 
@@ -39,49 +30,80 @@ class CustomElementsLocator extends LitElement {
   }
 
   firstUpdated() {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, {msg: "init"}, ({customElements, host}) => {
-        if(!denyList.includes(host)) {
+    this.switch = this.shadowRoot.querySelector('generic-switch');
 
-          col.doc(host).get().then((doc) => {
-            // doc exists, but doesnt use CE anymore -> delete
-            if(doc.exists && !(customElements.length > 0)) {
-              col.doc(host).delete();
-            } else {
-              if(customElements.length > 0) {
-                col.doc(host) // doc exists, update data
-                  .update({
-                    site: host,
-                    components: firebase.firestore.FieldValue.arrayUnion(...customElements),
-                    count: firebase.firestore.FieldValue.increment(1)
-                  }).catch((error) => {
-                    col.doc(host) // doesnt  exit, create
-                      .set({
-                        site: host,
-                        components: customElements,
-                        count: 1,
-                      }, { merge: true });
-                  });
-              }
+    ['keydown', 'click'].forEach(event => {
+      this.switch.addEventListener(event, e => {
+        switch (event) {
+          case 'keydown':
+            if (e.keyCode === 32 || e.keyCode === 13) {
+              e.preventDefault();
+              this.handleDisplayAmount(e);
             }
-          });
+            break;
+          case 'click':
+            this.handleDisplayAmount(e);
+            break;
+          default:
+            break;
         }
+      });
+    });
 
-        this.customElements = customElements;
-        this.host = host;
-        this.loaded = true;
+    chrome.storage.sync.get(['displayAmount'], ({displayAmount = false} = {}) => {
+      if(displayAmount) {
+        this.switch.setAttribute('checked', '');
+      } else {
+        this.switch.removeAttribute('checked')
+      }
+    });
+
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {msg: "get_latest"}, ({elements, host}) => {
+        this.customElements = elements;
       });
     });
 
     this.inputEl = this.shadowRoot.querySelector('input');
   }
 
-  handleChange(e) {
+  handleChange() {
     this.query = this.inputEl.value;
+  }
+
+  handleDisplayAmount(e) {
+    chrome.storage.sync.set({'displayAmount': e.target.hasAttribute('checked')}, () => {
+      chrome.runtime.sendMessage({
+        msg: 'display_amount_changed',
+        displayAmount: e.target.hasAttribute('checked'),
+        amount: this.customElements.length
+      }, () => {});
+
+      if(e.target.hasAttribute('checked')) {
+        this.switch.setAttribute('checked', '');
+      } else {
+        this.switch.removeAttribute('checked');
+      }
+
+    });
   }
 
   render() {
     return html`
+      <generic-dialog close-on-escape close-on-outside-click>
+        <button slot="invoker">
+          ${settings}
+        </button>
+        <div slot="content">
+          <div class="dialog-header">
+            <h2>Settings:</h2>
+            <button id="close" @click=${() => dialog.close()}>${cross}</button>
+          </div>
+          <generic-switch>
+            Display amount in extension icon
+          </generic-switch>
+        </div>
+      </generic-dialog>
       <div>
         <a class="img-href" href="https://www.open-wc.org" rel="noopener noreferrer" target="_blank">
           <svg style="margin-top: 10px" width="100px" height="100px" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200"><defs><style>.cls-1{fill:url(#linear-gradient);}</style><linearGradient id="linear-gradient" x1="100" x2="100" y2="200" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#9b03fe"/><stop offset="0.17" stop-color="#9706fe"/><stop offset="0.33" stop-color="#8b0ffe"/><stop offset="0.48" stop-color="#781dfe"/><stop offset="0.64" stop-color="#5c32fe"/><stop offset="0.8" stop-color="#394cfe"/><stop offset="0.95" stop-color="#0e6cfe"/><stop offset="1" stop-color="#0077fe"/></linearGradient></defs><path class="cls-1" d="M192.19,92.19H184.8a85.12,85.12,0,0,0-77-77V7.81a7.81,7.81,0,0,0-15.62,0V15.2a85.12,85.12,0,0,0-77,77H7.81a7.81,7.81,0,0,0,0,15.62H15.2a85.12,85.12,0,0,0,77,77v7.39a7.81,7.81,0,0,0,15.62,0V184.8a85.12,85.12,0,0,0,77-77h7.39a7.81,7.81,0,0,0,0-15.62ZM162.5,107.81h6.59a69.67,69.67,0,0,1-61.28,61.28V162.5a7.81,7.81,0,0,0-15.62,0v6.59a69.67,69.67,0,0,1-61.28-61.28H37.5a7.81,7.81,0,0,0,0-15.62H30.91A69.67,69.67,0,0,1,92.19,30.91V37.5a7.81,7.81,0,0,0,15.62,0V30.91a69.67,69.67,0,0,1,61.28,61.28H162.5a7.81,7.81,0,0,0,0,15.62ZM100,76.56A23.44,23.44,0,1,0,123.44,100,23.47,23.47,0,0,0,100,76.56Zm0,31.25a7.81,7.81,0,1,1,7.81-7.81A7.81,7.81,0,0,1,100,107.81Z"/></svg>
@@ -118,17 +140,34 @@ class CustomElementsLocator extends LitElement {
         width: 300px;
         font-family: sans-serif;
         display: block;
+        padding: 8px;
+      }
+
+      generic-dialog {
+        width: 100%;
+        display: flex;
+        margin-left: auto;
+      }
+
+      generic-dialog button {
+        margin-left: auto;
+        display: flex;
+        background: transparent;
+        border: none;
+      }
+
+      generic-dialog button[slot="invoker"] svg path {
+        stroke-width: 8;
       }
 
       .img-href {
         display: block;
       }
 
-
       h1 {
         font-size: 25px;
         text-align: center;
-        color: rgb(124, 124, 123);
+        color: var(--col-gray);
       }
 
       div {

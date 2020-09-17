@@ -1,4 +1,4 @@
-import {LitElement, html, css} from 'lit-element';
+import { LitElement, html, css } from 'lit-element';
 
 const sendMessage = (msg, el) => {
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
@@ -10,16 +10,7 @@ class FoundElement extends LitElement {
   static get properties() {
     return {
       customElementName: { type: String },
-      loading: { type: Boolean },
-      result: {type: Object},
-      customElement: { type: Object}
     }
-  }
-
-  constructor() {
-    super();
-    this.loading = false;
-    this.result = undefined;
   }
 
   highlight(el) {
@@ -39,32 +30,9 @@ class FoundElement extends LitElement {
           </span>
         </div>
         <div class="icons">
-          <img @click=${() => this.target(this.customElementName)} class="icon" src="./reticle.svg"/>
+          <img alt="" @click=${() => this.target(this.customElementName)} class="icon" src="./icons/reticle.svg"/>
         </div>
       </div>
-      ${this.loading
-        ? html`loading`
-        : html``
-      }
-      ${this.result
-        ? html`
-          <div>
-            <h1>${this.result.name}</h1>
-            <h2>${this.customElement.name}</h2>
-            <a target="_blank" href="${this.result.npmUrl}">npm</a> <a target="_blank" href="${this.result.githubUrl}">github</a>
-            <ul>
-              <li>Stars: ${this.result.githubStars}</li>
-              <li>Size gzip: ${this.result.sizeGzip}</li>
-              <li>Deps: ${this.result.flattenedDependencies.length}</li>
-            </ul>
-            <h3>Readme:</h3>
-            <code>
-              ${this.result.readme}
-            </code>
-          </div>
-        `
-        : html``
-      }
     `;
   }
 
