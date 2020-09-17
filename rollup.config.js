@@ -9,17 +9,17 @@ export default [{
     format: 'esm',
   },
   plugins: [
-    // resolve bare import specifiers
     resolve(),
     indexHTML(),
     copy({
-      files: ['./src/*.png', './src/*.svg'],
-      dest: 'dist',
+      files: ['./src/**/*.png', './src/**/*.svg'],
+      dest: 'dist/icons',
     })
   ],
 },
+// content script
 {
-  input: './src/content_script.js',
+  input: './src/scripts/content_script.js',
   output: {
     dir: 'dist',
     format: 'iife',
@@ -28,8 +28,9 @@ export default [{
     resolve()
   ]
 },
+// background script
 {
-  input: './src/background_script.js',
+  input: './src/scripts/background_script.js',
   output: {
     dir: 'dist',
     format: 'iife',

@@ -20,7 +20,7 @@
       "js": [
         "dist/content_script.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_idle"
     }
   ],
   "background": {
@@ -30,6 +30,8 @@
   },
   "permissions": [
     "activeTab",
+    "tabs",
+    "storage",
     "background"
   ]
 }

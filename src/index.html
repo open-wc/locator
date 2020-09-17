@@ -6,12 +6,94 @@
       body {
         min-width:300px;
         background-color: rgb(242, 242, 242);
+        margin: 0;
+      }
+
+
+      :root {
+        --col-dark: #2f3136;
+        --col-darker: #26272b;
+        --col-light: #36393e;
+        --col-active: none;
+        --switch-track: #73767d;
+        --switch-thumb: white;
+        --col-gray: rgb(124, 124, 123);
+      }
+
+      .dialog-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 30px;
+      }
+
+      .dialog-header h2 {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      .dialog-header button {
+        background: transparent;
+        border: none;
+        border-radius: 4px;
+      }
+
+      .dialog-header button:hover {
+        background-color: #e2e2e2;
+      }
+
+      generic-switch {
+        display: flex;
+        margin-top:20px;
+        margin-bottom:20px;
+        --generic-switch-focus: 0 0 0 1px blue;
+      }
+
+      generic-switch::part(track) {
+        border-top-left-radius: 8px;
+        height: 100%;
+        background-color: var(--switch-track);
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+      }
+
+      generic-switch::part(thumb){
+        margin-top: -2px;
+        border-radius: 50%;
+        background-color: var(--switch-thumb);
+        width: 16px;
+        border: solid 2px var(--col-dark);
+      }
+
+      generic-switch[checked]::part(thumb) {
+        right: -3px;
+      }
+
+      generic-switch::part(button):focus {
+        outline: 0;
+        border-radius: 5px;
+        box-shadow: 0 0 0 3px var(--col-active)!important;
+        transition: box-shadow .1s ease-in-out;
+      }
+
+      generic-dialog-overlay::part(dialog) {
+        min-width: 260px;
+        height: 200px;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.5);
+      }
+
+      generic-switch {
+        justify-content: space-between;
       }
     </style>
   </head>
   <body>
     <custom-elements-locator></custom-elements-locator>
-    <script type="module" src="./main.js">
+    <script type="module" src="./custom-elements-locator.js">
     </script>
   </body>
 </html>
