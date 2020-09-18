@@ -15,7 +15,6 @@ class CustomElementsLocator extends LitElement {
       loaded: { type: Boolean },
       showSubmit: { type: Boolean },
       host: { type: String},
-      // settings:
       displayAmount: { type: Boolean },
     }
   }
@@ -126,7 +125,7 @@ class CustomElementsLocator extends LitElement {
                     </li>
                   `)}
               </ul>
-              <share-element .domain="${this.host}"></share-element>
+              <share-element .amount="${this.customElements.length}" .domain="${this.host}"></share-element>
             `
           : html`<p>No custom elements found!</p>`
         : html`<p>Loading...</p>`
