@@ -14,12 +14,11 @@ s.innerHTML = `
     let allCustomElements = [];
     requestIdleCallback(() => {
       allCustomElements = findAllCustomElements(document.querySelectorAll('*'));
-
       document.dispatchEvent(new CustomEvent('__GET_CUSTOM_ELEMENTS', {
         detail: {
           elements: allCustomElements,
           host: window.location.host,
-          url: window.location.href
+          href: window.location.href
         }
       }));
 
@@ -35,24 +34,25 @@ s.innerHTML = `
               detail: {
                 elements: allCustomElements,
                 host: window.location.host,
-                url: window.location.href
+                href: window.location.href
               }
             }));
           }
         });
-      }, 60 * 1000);
+      }, 30 * 1000);
     }, { timeout: 2000 })
-  }
+  };
 `;
 document.head.append(s);
 
 document.addEventListener('__GET_CUSTOM_ELEMENTS', (e) => {
-  const { url, elements } = e.detail;
+  const { href, host, elements } = e.detail;
   allCustomElements = elements;
   chrome.runtime.sendMessage({
     msg: 'found_new_elements',
     elements,
-    url
+    host,
+    href
   }, () => {
     /* no op */
   });
@@ -62,7 +62,8 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   if(request.msg === "get_latest") {
     sendResponse({
       elements: allCustomElements,
-      host: window.location.host
+      host: window.location.host,
+      href: window.location.href
     });
     return true;
   }

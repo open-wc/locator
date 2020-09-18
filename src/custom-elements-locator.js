@@ -7,6 +7,11 @@ import { dialog} from '@generic-components/components';
 import './found-element.js';
 import './share-element.js'
 
+const denylist = [
+  '127.0.0.1',
+  'localhost'
+];
+
 class CustomElementsLocator extends LitElement {
   static get properties() {
     return {
@@ -15,6 +20,7 @@ class CustomElementsLocator extends LitElement {
       loaded: { type: Boolean },
       showSubmit: { type: Boolean },
       host: { type: String},
+      href: { type: String},
       // settings:
       displayAmount: { type: Boolean },
     }
@@ -27,6 +33,7 @@ class CustomElementsLocator extends LitElement {
     this.loaded = true;
     this.showSubmit = false;
     this.host = '';
+    this.href = '';
   }
 
   firstUpdated() {
@@ -59,8 +66,21 @@ class CustomElementsLocator extends LitElement {
     });
 
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, {msg: "get_latest"}, ({elements, host}) => {
+      chrome.tabs.sendMessage(tabs[0].id, {msg: "get_latest"}, ({elements, host, href}) => {
         this.customElements = elements;
+        this.host = host;
+        this.href = href;
+
+        if(!denylist.includes(this.host)) {
+          fetch('https://custom-elements-api.cleverapps.io/add', {
+            method: 'post',
+            body: JSON.stringify({ href, host }),
+            headers: {
+              "Content-Type": "application/json",
+              'Access-Control-Allow-Origin': '*',
+            }
+          });
+        }
       });
     });
 

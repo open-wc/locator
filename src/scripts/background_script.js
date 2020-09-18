@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener(({
 		elements = [],
 		displayAmount = false,
 		amount = 0,
-		url
+		href
 	}, _, sendResponse) => {
 
 	if (msg === 'display_amount_changed') {
@@ -20,10 +20,9 @@ chrome.runtime.onMessage.addListener(({
 
 	if (msg === 'found_new_elements') {
 		const hasElements = elements.length > 0;
-
 		if(hasElements) {
 			chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-				if(tabs[0].url === url) {
+				if(tabs[0].url === href) {
 					setIconState(elements);
 				}
 			});
