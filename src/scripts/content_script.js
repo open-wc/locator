@@ -10,7 +10,7 @@ const s = document.createElement('script');
 s.innerHTML = `
   ${findAll}
 
-  window.onload = function() {
+  window.addEventListener('load', function() {
     let allCustomElements = [];
     requestIdleCallback(() => {
       allCustomElements = findAllCustomElements(document.querySelectorAll('*'));
@@ -27,7 +27,6 @@ s.innerHTML = `
           const oldLength = allCustomElements.length;
           const newElements = findAllCustomElements(document.querySelectorAll('*'));
           const mergedElements = [...new Set([...allCustomElements, ...newElements])];
-
           if(oldLength !== mergedElements.length && !(mergedElements.length < oldLength)) {
             allCustomElements = mergedElements;
             document.dispatchEvent(new CustomEvent('__GET_CUSTOM_ELEMENTS', {
@@ -41,7 +40,7 @@ s.innerHTML = `
         });
       }, 30 * 1000);
     }, { timeout: 2000 })
-  };
+  });
 `;
 document.head.append(s);
 
