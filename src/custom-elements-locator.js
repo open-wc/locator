@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element';
 import { cross, settings } from './icons/index.js';
 import '@generic-components/components/dialog.js';
 import '@generic-components/components/switch.js';
-import { dialog} from '@generic-components/components';
+import { dialog } from '@generic-components/components';
 
 import './found-element.js';
 import './share-element.js'
@@ -12,65 +12,83 @@ const denylist = [
   'localhost'
 ];
 
+/**
+ * @typedef {Object} StorageResponse
+ * @property {boolean} displayAmount
+ * @property {boolean} allowStoreInDb
+ */
+
+/**
+ * @typedef {Object} MessageResponse
+ * @property {string[]} elements
+ * @property {string} host
+ * @property {string} href
+ */
+
 class CustomElementsLocator extends LitElement {
   static get properties() {
     return {
       customElements: { type: Array },
       query: { type: String },
       loaded: { type: Boolean },
-      showSubmit: { type: Boolean },
       host: { type: String},
       href: { type: String},
       displayAmount: { type: Boolean },
+      allowStoreInDb: { type: Boolean },
     }
   }
 
   constructor() {
     super();
+    /** @type {string[]} */
     this.customElements = [];
+    /** @type {string} */
     this.query = '';
+    /** @type {boolean} */
     this.loaded = true;
-    this.showSubmit = false;
+    /** @type {string} */
     this.host = '';
+    /** @type {string} */
     this.href = '';
+    /** @type {boolean} */
+    this.displayAmount = false;
+    /** @type {boolean} */
+    this.allowStoreInDb = false;
+  }
+
+  /**
+   * Creates a deferred promise so we can await sending the amount
+   * of custom elements to the background script
+   * @returns {Promise<void>}
+   */
+  createDeferredPromise() {
+    return new Promise(res => {
+      /** @type {(value?: any) => void} */
+      this.__resolveLatestElements = res;
+    });
   }
 
   firstUpdated() {
-    this.switch = this.shadowRoot.querySelector('generic-switch');
-
-    ['keydown', 'click'].forEach(event => {
-      this.switch.addEventListener(event, e => {
-        switch (event) {
-          case 'keydown':
-            if (e.keyCode === 32 || e.keyCode === 13) {
-              e.preventDefault();
-              this.handleDisplayAmount(e);
-            }
-            break;
-          case 'click':
-            this.handleDisplayAmount(e);
-            break;
-          default:
-            break;
-        }
-      });
+    chrome.storage.sync.get(['displayAmount', 'allowStoreInDb'],
+      /** @type {(res: StorageResponse) => void} */
+      (response) => {
+      this.displayAmount = response.displayAmount;
+      this.allowStoreInDb = response.allowStoreInDb;
     });
 
-    chrome.storage.sync.get(['displayAmount'], ({displayAmount = false} = {}) => {
-      if(displayAmount) {
-        this.switch.setAttribute('checked', '');
-      } else {
-        this.switch.removeAttribute('checked')
-      }
-    });
+    this.__gotLatestElements = this.createDeferredPromise();
 
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, {msg: "get_latest"}, ({elements, host, href}) => {
+      chrome.tabs.sendMessage(tabs[0].id, {msg: "get_latest"},
+      /** @type {(res: MessageResponse) => void} */
+      ({elements, host, href}) => {
         this.customElements = elements;
         this.host = host;
         this.href = href;
 
-        if(!denylist.includes(this.host)) {
+        this.__resolveLatestElements();
+
+        if(!denylist.includes(this.host) && this.allowStoreInDb) {
           fetch('https://custom-elements-api.cleverapps.io/add', {
             method: 'post',
             body: JSON.stringify({ href, host }),
@@ -90,21 +108,19 @@ class CustomElementsLocator extends LitElement {
     this.query = this.inputEl.value;
   }
 
-  handleDisplayAmount(e) {
-    chrome.storage.sync.set({'displayAmount': e.target.hasAttribute('checked')}, () => {
+  async toggleDisplayAmount(e) {
+    await this.__gotLatestElements;
+    chrome.storage.sync.set({'displayAmount': e.detail}, () => {
       chrome.runtime.sendMessage({
         msg: 'display_amount_changed',
-        displayAmount: e.target.hasAttribute('checked'),
+        displayAmount: e.detail,
         amount: this.customElements.length
       }, () => {});
-
-      if(e.target.hasAttribute('checked')) {
-        this.switch.setAttribute('checked', '');
-      } else {
-        this.switch.removeAttribute('checked');
-      }
-
     });
+  }
+
+  toggleAllowStoreInDb(e) {
+    chrome.storage.sync.set({'allowStoreInDb': e.detail}, () => {});
   }
 
   render() {
@@ -118,9 +134,19 @@ class CustomElementsLocator extends LitElement {
             <h2>Settings:</h2>
             <button id="close" @click=${() => dialog.close()}>${cross}</button>
           </div>
-          <generic-switch>
+          <generic-switch
+            @checked-changed=${this.toggleDisplayAmount}
+            .checked=${this.displayAmount}
+          >
             Display amount in extension icon
           </generic-switch>
+          <generic-switch
+            @checked-changed=${this.toggleAllowStoreInDb}
+            .checked=${this.allowStoreInDb}
+          >
+            Allow storing found custom elements in the database, so they can be displayed on <a href="https://wild.open-wc.org" rel="noopener noreferrer" target="_blank">wild.open-wc.org</a>.
+          </generic-switch>
+          <p>No personal data gets collected or saved.</p>
         </div>
       </generic-dialog>
       <div>

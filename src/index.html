@@ -22,6 +22,7 @@
 
       .dialog-header {
         display: flex;
+        flex-direction: row;
         align-items: center;
         justify-content: space-between;
         margin-top: 10px;
@@ -48,6 +49,15 @@
         margin-top:20px;
         margin-bottom:20px;
         --generic-switch-focus: 0 0 0 1px blue;
+      }
+
+      generic-switch::part(label) {
+        max-width: 200px;
+      }
+
+      generic-dialog-overlay div {
+        display: flex;
+        flex-direction: column;
       }
 
       generic-switch::part(track) {
@@ -78,9 +88,16 @@
         transition: box-shadow .1s ease-in-out;
       }
 
+      generic-dialog-overlay p {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        text-align: center;
+        font-weight: bold;
+      }
+
       generic-dialog-overlay::part(dialog) {
         min-width: 260px;
-        height: 200px;
+        height: 300px;
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.5);
