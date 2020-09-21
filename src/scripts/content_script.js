@@ -45,7 +45,7 @@ s.innerHTML = `
 document.head.append(s);
 
 document.addEventListener('__GET_CUSTOM_ELEMENTS', (e) => {
-  const { href, host, elements } = e.detail;
+  const { href, host, elements } = /** @type {Object} */ (e).detail;
   allCustomElements = elements;
   chrome.runtime.sendMessage({
     msg: 'found_new_elements',

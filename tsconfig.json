@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "lib": [
+      "es2019", "DOM"
+    ],
+    "target": "ES2019",
+    "moduleResolution": "node",
+  },
+  "include": [
+    "src"
+  ]
+}

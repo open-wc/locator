@@ -11,6 +11,8 @@ class ShareElement extends LitElement {
 
   constructor() {
     super();
+    this.amount = 0;
+    this.domain = '';
     this.locatorUrl = encodeURI("https://chrome.google.com/webstore/detail/custom-elements-locator/eccplgjbdhhakefbjfibfhocbmjpkafc");
   }
 

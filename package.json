@@ -20,6 +20,7 @@
     "query-selector-shadow-dom": "^0.3.4"
   },
   "devDependencies": {
+    "@types/chrome": "0.0.123",
     "chokidar-cli": "^2.1.0",
     "mversion": "^2.0.1",
     "rimraf": "^3.0.0",

@@ -13,6 +13,11 @@ class FoundElement extends LitElement {
     }
   }
 
+  constructor() {
+    super();
+  this.customElementName = '';
+  }
+
   highlight(el) {
     sendMessage("highlight", el);
   }
