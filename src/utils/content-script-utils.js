@@ -21,3 +21,25 @@ export const findAll = `
     return allCustomElements;
   }
 `;
+
+export const denylist = [
+  '127.0.0.1',
+  'localhost'
+];
+
+export const storeInDb = (href, host) => {
+  if(!denylist.includes(host)) {
+    chrome.storage.sync.get('allowStoreInDb', ({allowStoreInDb}) => {
+      if (allowStoreInDb) {
+        fetch('https://custom-elements-api.cleverapps.io/add', {
+          method: 'post',
+          body: JSON.stringify({ href, host }),
+          headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*',
+          }
+        });
+      }
+    });
+  }
+}

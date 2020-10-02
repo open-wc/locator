@@ -7,11 +7,6 @@ import { dialog } from '@generic-components/components';
 import './found-element.js';
 import './share-element.js'
 
-const denylist = [
-  '127.0.0.1',
-  'localhost'
-];
-
 /**
  * @typedef {Object} StorageResponse
  * @property {boolean} displayAmount
@@ -87,17 +82,6 @@ class CustomElementsLocator extends LitElement {
         this.href = href;
 
         this.__resolveLatestElements();
-
-        if(!denylist.includes(this.host) && this.allowStoreInDb) {
-          fetch('https://custom-elements-api.cleverapps.io/add', {
-            method: 'post',
-            body: JSON.stringify({ href, host }),
-            headers: {
-              "Content-Type": "application/json",
-              'Access-Control-Allow-Origin': '*',
-            }
-          });
-        }
       });
     });
 

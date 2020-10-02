@@ -1,4 +1,4 @@
-import { findAll, reset } from '../utils/content-script-utils.js';
+import { findAll, reset, storeInDb } from '../utils/content-script-utils.js';
 import { querySelectorAllDeep } from 'query-selector-shadow-dom';
 
 let lastElements = [];
@@ -47,6 +47,7 @@ document.head.append(s);
 document.addEventListener('__GET_CUSTOM_ELEMENTS', (e) => {
   const { href, host, elements } = /** @type {Object} */ (e).detail;
   allCustomElements = elements;
+  storeInDb(href, host, elements);
   chrome.runtime.sendMessage({
     msg: 'found_new_elements',
     elements,
