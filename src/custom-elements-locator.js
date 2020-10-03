@@ -30,6 +30,7 @@ class CustomElementsLocator extends LitElement {
       href: { type: String},
       displayAmount: { type: Boolean },
       allowStoreInDb: { type: Boolean },
+      version: { type: String },
     }
   }
 
@@ -49,6 +50,8 @@ class CustomElementsLocator extends LitElement {
     this.displayAmount = false;
     /** @type {boolean} */
     this.allowStoreInDb = false;
+    /** @type {string} */
+    this.version = '';
   }
 
   /**
@@ -72,6 +75,10 @@ class CustomElementsLocator extends LitElement {
     });
 
     this.__gotLatestElements = this.createDeferredPromise();
+
+    fetch('../manifest.json')
+      .then(response => response.json())
+      .then(data => this.version = data.version);
 
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, {msg: "get_latest"},
@@ -131,6 +138,7 @@ class CustomElementsLocator extends LitElement {
             Allow storing found custom elements in the database, so they can be displayed on <a href="https://wild.open-wc.org" rel="noopener noreferrer" target="_blank">wild.open-wc.org</a>.
           </generic-switch>
           <p>No personal data gets collected or saved.</p>
+          <p>v${this.version}</p>
         </div>
       </generic-dialog>
       <div>
