@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@generic-components/components": "^1.0.0-rc.2",
-    "firebase": "^7.19.1",
+    "firebase": "^9.15.0",
     "lit-element": "^2.2.1",
     "query-selector-shadow-dom": "^0.3.4"
   },
